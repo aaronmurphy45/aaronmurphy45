@@ -166,14 +166,31 @@ def _staggered(attr: str, delay: float, target: str, dur: float, splines: str | 
     )
 
 
+# One-shot reveals are disabled, and this is the most important comment here.
+#
+# GitHub renders a README image at frame zero and never advances the SMIL
+# timeline. Whatever a graphic looks like at t=0 is what every visitor sees,
+# permanently. So anything that starts hidden -- a fade from opacity 0, a bar
+# growing from width 0, a clip revealing from width 0 -- renders as a blank box
+# on the one surface this repo exists to serve.
+#
+# Encoding the delay in keyTimes with begin="0s" makes this strictly worse, not
+# better: it guarantees the element is at its *first* value at t=0 rather than
+# at its base attribute. That mistake is what shipped the first time.
+#
+# Kept as no-ops rather than deleted so call sites still read as "an element was
+# revealed here", and so re-enabling has one obvious place to change.
+#
+# Looping animations remain fine and are still used -- see scenes.pipeline,
+# where frame zero is already the finished DAG and the motion is decoration on
+# top. The rule is not "no animation", it is "frame zero is the finished graphic".
+
 def fade_in(delay: float, dur: float = 0.45) -> str:
-    """SMIL fade-in. Put this inside a group whose base opacity is 1."""
-    return _staggered("opacity", delay, "1", dur, None)
+    return ""
 
 
 def grow(delay: float, target: float, dur: float = 0.7, attr: str = "width") -> str:
-    """SMIL grow. The element must carry `attr` = target as its base value."""
-    return _staggered(attr, delay, f"{target:.1f}", dur, "0.2 0 0 1")
+    return ""
 
 
 def write(path: Path, content: str) -> bool:

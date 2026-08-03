@@ -62,19 +62,21 @@ rate-limit me, change its API, or quietly shut down.
 redraws the stat graphics, and commits only the files whose bytes actually<br>
 changed — a quiet day produces no commit at all.
 
-The motion is SMIL, declared inside each SVG. READMEs get their `<script>` and<br>
-`<style>` tags sanitised away, so animation has to live somewhere GitHub does<br>
-not sanitise — and an SVG rendered as an image is exactly that. The headings<br>
-are images for the same reason: styling README text is impossible, so the only<br>
-route to a chosen typeface is to draw the words yourself.
+The headings are images because styling README text is impossible — GitHub<br>
+sanitises `<script>` and `<style>` out of markdown — so the only route to a<br>
+chosen typeface is to draw the words yourself.
 
 That typeface is [JetBrains Mono](scripts/fonts), subset per graphic to the<br>
 handful of glyphs it draws and base64-inlined, since an SVG loaded via `<img>`<br>
 cannot fetch anything external.
 
-Every animated element carries its *finished* value as a plain attribute, with<br>
-the delay encoded in `keyTimes` rather than `begin`. Anything that ignores SMIL<br>
-still sees a complete graphic instead of an empty box.
+Every graphic is drawn complete at frame zero. That constraint is the whole<br>
+design, and it was learned the hard way: GitHub renders a README image at t=0<br>
+and never advances the SMIL timeline, so a fade that starts at opacity 0 or a<br>
+clip that reveals from width 0 is not a subtle animation — it is a blank box,<br>
+permanently, for every visitor. The first version of this page shipped a<br>
+terminal that typed itself out and was therefore invisible. Motion now only<br>
+ever loops on top of an already-finished picture.
 
 Language figures count public repositories only. `year.svg` draws one character<br>
 per day: `:` `+` `#` `@`, quiet to loud.
