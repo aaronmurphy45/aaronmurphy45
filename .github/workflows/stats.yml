@@ -1,0 +1,48 @@
+name: stats
+
+# Redraws the stat graphics once a day and commits only what changed.
+# Nothing on the profile loads from a third party, so nothing can rate-limit
+# or go dark.
+
+on:
+  schedule:
+    - cron: "17 4 * * *"   # 04:17 UTC daily
+  workflow_dispatch:        # and on demand, from the Actions tab
+
+permissions:
+  contents: write
+
+concurrency:
+  group: stats
+  cancel-in-progress: true
+
+jobs:
+  draw:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - run: pip install -r requirements.txt
+
+      - name: Draw
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_LOGIN: ${{ github.repository_owner }}
+        run: python scripts/generate.py
+
+      - name: Commit if anything moved
+        run: |
+          if [ -z "$(git status --porcelain -- '*.svg')" ]; then
+            echo "nothing changed"
+            exit 0
+          fi
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- '*.svg'
+          git commit -m "stats: $(date -u +%Y-%m-%d)"
+          git push
