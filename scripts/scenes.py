@@ -85,30 +85,11 @@ def terminal() -> str:
             line = prompt + content
             chars |= set(line)
             width = len(line) * CW
-            clip_id = f"t{row}"
-            steps = len(line)
-            dur = steps * TYPE_RATE
-            # Discrete keyTimes give a real per-character step rather than a
-            # smooth wipe -- it reads as typing instead of a swipe. The delay
-            # before this line's turn is a leading zero-width hold rather than
-            # a begin= offset: with begin=, the rect would sit at its base
-            # (full) width until its turn arrived, so every line further down
-            # the session would show fully typed and then snap back to empty.
-            total = clock + dur
-            head = clock / total
-            values = ";".join(["0"] + [f"{i * CW:.1f}" for i in range(steps + 1)])
-            times = ";".join(
-                ["0"] + [f"{head + (1 - head) * i / steps:.4f}" for i in range(steps + 1)]
-            )
-            defs.append(
-                f'<clipPath id="{clip_id}">'
-                f'<rect x="{pad_x}" y="{y - 9}" height="{lh}" width="{width:.1f}">'
-                f'<animate attributeName="width" values="{values}" keyTimes="{times}" '
-                f'calcMode="discrete" begin="0s" dur="{total:.2f}s" fill="freeze"/>'
-                f"</rect></clipPath>"
-            )
+            # No typing animation. A clip that reveals from width 0 is blank at
+            # frame zero, and frame zero is the only frame GitHub ever renders
+            # -- see the note above fade_in in svgkit.
             body.append(
-                f'<g clip-path="url(#{clip_id})">'
+                "<g>"
                 + k.text(pad_x, y, prompt, cls="accent b", size=size,
                          extra=f' textLength="{len(prompt) * CW:.1f}" lengthAdjust="spacing"')
                 + k.text(pad_x + len(prompt) * CW, y, content, cls="fg", size=size,
@@ -116,7 +97,8 @@ def terminal() -> str:
                                'lengthAdjust="spacing"')
                 + "</g>"
             )
-            clock += dur + PAUSE
+            chars |= set(line)
+            clock += len(line) * TYPE_RATE + PAUSE
         elif kind == "git":
             # Short hash dimmed, subject at full weight -- reads like real
             # `git log --oneline` rather than a flat grey line.
@@ -154,9 +136,11 @@ def terminal() -> str:
         + k.fade_in(clock, 0.2)
         + "</g>"
     )
+    # Base opacity 1 so the cursor is a solid block at frame zero; the blink is
+    # a bonus for anyone who opens the SVG directly.
     body.append(
         f'<rect x="{pad_x + len(prompt) * CW:.1f}" y="{y - 7}" width="{CW:.1f}" height="14" '
-        f'fill="var(--accent)" opacity="0">'
+        f'fill="var(--accent)" opacity="1">'
         f'<animate attributeName="opacity" values="0;1;1;0;0;1;1;0;0" '
         f'keyTimes="0;0.01;0.5;0.51;0.75;0.76;0.99;1;1" '
         f'begin="{clock + 0.2:.2f}s" dur="1.1s" repeatCount="indefinite"/>'
