@@ -26,17 +26,15 @@ making the slow thing fast, and writing the runbook so nobody has to guess at 3a
 
 <samp>python &nbsp; go &nbsp; sql &nbsp; javascript &nbsp; airflow &nbsp; celery &nbsp; redis &nbsp; postgres &nbsp; azure &nbsp; docker &nbsp; git &nbsp; linux</samp>
 
-<img src="./hd-projects.svg" width="620" alt="projects"/>
+<!-- The projects section is parked until there are real public repos to point
+     at. Restore it from git history rather than rewriting the placeholders:
+     the heading art (hd-projects.svg) is still in the repo and unused. -->
 
-<!-- Replace these with real public repos as you seed them. Each block is:
-     bold link · <samp>stack</samp>, then two or three lines of what it does.
-     Say what it does and what was actually hard about it. -->
+<div align="center">
 
-**[project-one](https://github.com/aaronmurphy45)** &nbsp;·&nbsp; <samp>python</samp><br>
-One line on what it does. One line on the part that was actually difficult.
+<img src="./portrait.jpg" width="360" alt="Aaron Murphy"/>
 
-**[project-two](https://github.com/aaronmurphy45)** &nbsp;·&nbsp; <samp>go</samp><br>
-One line on what it does. One line on the part that was actually difficult.
+</div>
 
 <img src="./hd-stats.svg" width="620" alt="stats"/>
 
