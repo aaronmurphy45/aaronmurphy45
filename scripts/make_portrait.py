@@ -21,11 +21,48 @@ import svgkit as k
 RAMP = " .:-=+*#%@"
 
 
-def render(image_path: Path, cols: int, contrast: float, invert: bool) -> list[str]:
+def isolate(image):
+    """Drop the background to white and spread the subject over the full ramp.
+
+    Two problems, one fix each.
+
+    A snapshot has its subject and its background in overlapping tonal ranges,
+    so the ramp describes the palm trees as enthusiastically as the face. A
+    feathered ellipse pushes everything outside the head to white, which the
+    ramp reads as blank.
+
+    And a sunlit photo bunches almost every pixel into a narrow band of light
+    mid-tones, so nearly every cell picks the same glyph and the result is a
+    uniform smudge. Equalising against the histogram of the *masked region
+    only* spreads the face across all ten ramp levels. Equalising the whole
+    frame does not work -- the background dominates the histogram and the face
+    stays compressed.
+    """
+    from PIL import Image, ImageDraw, ImageFilter, ImageOps
+
+    width, height = image.size
+    hard = Image.new("L", (width, height), 0)
+    ImageDraw.Draw(hard).ellipse(
+        (width * 0.09, height * 0.05, width * 0.91, height * 0.97), fill=255
+    )
+    equalised = ImageOps.equalize(image, mask=hard)
+    soft = hard.filter(ImageFilter.GaussianBlur(width // 50))
+    return Image.composite(equalised, Image.new("L", (width, height), 255), soft)
+
+
+def render(image_path: Path, cols: int, contrast: float, invert: bool,
+           crop: tuple[int, ...] | None = None, cut_out: bool = True) -> list[str]:
     from PIL import Image, ImageEnhance, ImageOps
 
     image = Image.open(image_path).convert("L")
-    image = ImageOps.autocontrast(image, cutoff=2)
+    if crop:
+        image = image.crop(crop)
+    if cut_out:
+        # isolate() already equalised; autocontrast on top of that only clips
+        # the extremes back together and muddies the midtones.
+        image = isolate(image)
+    else:
+        image = ImageOps.autocontrast(image, cutoff=2)
     if contrast != 1.0:
         image = ImageEnhance.Contrast(image).enhance(contrast)
     if invert:
@@ -76,7 +113,10 @@ def main() -> int:
     parser.add_argument("--contrast", type=float, default=1.25)
     parser.add_argument("--size", type=int, default=7, help="font size in px")
     parser.add_argument("--invert", action="store_true",
-                        help="use for light subjects on dark backgrounds")
+                        help="dark subject on a light page -- almost always what you want")
+    parser.add_argument("--crop", help="x0,y0,x1,y1 in source pixels, applied first")
+    parser.add_argument("--no-isolate", action="store_true",
+                        help="skip background removal and masked equalisation")
     parser.add_argument("--out", type=Path, default=k.ROOT / "ascii.svg")
     args = parser.parse_args()
 
@@ -84,7 +124,9 @@ def main() -> int:
         print(f"no such image: {args.image}")
         return 1
 
-    lines = render(args.image, args.cols, args.contrast, args.invert)
+    crop = tuple(int(v) for v in args.crop.split(",")) if args.crop else None
+    lines = render(args.image, args.cols, args.contrast, args.invert,
+                   crop=crop, cut_out=not args.no_isolate)
     print("\n".join(lines))
     k.write(args.out, to_svg(lines, args.size))
     print(f"\nwrote {args.out}")
