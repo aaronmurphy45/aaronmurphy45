@@ -32,7 +32,7 @@ making the slow thing fast, and writing the runbook so nobody has to guess at 3a
 
 <div align="center">
 
-<!-- <img src="./portrait.jpg" width="360" alt="Aaron Murphy"/> -->
+<img src="./ascii.svg" width="440" alt="Aaron Murphy"/>
 
 </div>
 
