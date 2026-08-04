@@ -2,7 +2,7 @@
 
 <img src="./hero.svg" width="620" alt="terminal"/>
 
-[linkedin](https://www.linkedin.com/in/aaronmurphy45/) &nbsp;·&nbsp;
+[linkedin](https://www.linkedin.com/in/aaron-murphy-2949551b9/) &nbsp;·&nbsp;
 [email](mailto:aaronm2766@gmail.com)
 
 </div>
@@ -32,7 +32,7 @@ making the slow thing fast, and writing the runbook so nobody has to guess at 3a
 
 <div align="center">
 
-<img src="./portrait.jpg" width="360" alt="Aaron Murphy"/>
+<!-- <img src="./portrait.jpg" width="360" alt="Aaron Murphy"/> -->
 
 </div>
 
