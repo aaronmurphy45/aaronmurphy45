@@ -9,14 +9,45 @@
 
 <img src="./hd-about.svg" width="620" alt="about"/>
 
-> Backend engineer in Dublin, Ireland.<br>
-> Systems that have to stay up, and the pager that proves it.
+> Backend engineer in Dublin, Ireland. Open to backend, platform and applied-AI roles.<br>
+> I build systems that have to stay up, and write the runbook so nobody guesses at 3am.
 
-Five years building things other people depend on. Mostly Python, some Go, a lot of<br>
-SQL, and more YAML than I'd like to admit to in public.
+Five years shipping production systems other people depend on: mostly Python, some Go,<br>
+a lot of SQL. Outside work I build whole products end to end in TypeScript, from the<br>
+schema and the billing to the webhooks and the LLM pipeline.
 
-I like the unglamorous half of the job: finding the N+1, deleting more than I add,<br>
-making the slow thing fast, and writing the runbook so nobody has to guess at 3am.
+What I'm good at:
+
+- **Making slow things fast.** The N+1, the missing index, the query that scans everything.
+- **Pipelines that survive failure.** Queues, retries, idempotent webhooks, no double writes.
+- **Security that survives review.** Tenant isolation, encrypted secrets, verify before parse.
+- **LLM features you can trust.** Structured output, validation in code, cost metered per call.
+- **Deleting more than I add.**
+
+<img src="./hd-projects.svg" width="620" alt="projects"/>
+
+**[coachable](https://github.com/aaronmurphy45/coachable)** &nbsp;·&nbsp; <samp>typescript &nbsp; next.js &nbsp; postgres &nbsp; drizzle &nbsp; ai-sdk &nbsp; stripe</samp><br>
+Multi-tenant AI sales-coaching SaaS. It grades every call against a company's own A+ standard,<br>
+finds the single biggest weakness, and turns it into a roleplay drill the rep runs before the next dial.<br>
+The hard parts: tenant isolation that holds even when a record id leaks; customer API keys encrypted<br>
+with AES-256-GCM; signed webhooks for six phone providers that verify before they parse; a<br>
+retrying transcribe → grade worker; and cost metered in micro-USD so sub-cent calls still bill.
+
+**[all-print](https://github.com/aaronmurphy45/all-print)** &nbsp;·&nbsp; <samp>react &nbsp; vite &nbsp; netlify functions</samp><br>
+Production rebuild of a Dublin print shop's site: live catalogue pricing, a quote flow, and a<br>
+browser designer for wedding and memorial stationery. One renderer draws both the preview and the<br>
+300 DPI print file, so what the customer arranges is exactly what gets printed. The PDF writer is<br>
+200 lines with no dependency, and the same code runs in the browser and the serverless function.
+
+**[ai-code-reviewer](https://github.com/aaronmurphy45/ai-code-reviewer)** &nbsp;·&nbsp; <samp>python &nbsp; fastapi &nbsp; openai &nbsp; github api</samp><br>
+Reviews a file, a diff or a live pull request and returns structured findings with severity and<br>
+confidence. A finding that can't name a concrete failure scenario gets dropped, and that one rule<br>
+removes most of the noise these tools usually produce.
+
+**[ai-clip-cutter](https://github.com/aaronmurphy45/ai-clip-cutter)** &nbsp;·&nbsp; <samp>python &nbsp; whisper &nbsp; ffmpeg</samp><br>
+Long video in, vertical clips out, with word-by-word burned-in captions and an on-screen hook.<br>
+Model timings are treated as suggestions: each clip is snapped to real word boundaries, clamped,<br>
+and de-overlapped in code, so no clip opens halfway through a syllable.
 
 <img src="./hd-the-loop.svg" width="620" alt="the loop"/>
 
@@ -24,11 +55,7 @@ making the slow thing fast, and writing the runbook so nobody has to guess at 3a
 
 <img src="./hd-stack.svg" width="620" alt="stack"/>
 
-<samp>python &nbsp; go &nbsp; sql &nbsp; javascript &nbsp; airflow &nbsp; celery &nbsp; redis &nbsp; postgres &nbsp; azure &nbsp; docker &nbsp; git &nbsp; linux</samp>
-
-<!-- The projects section is parked until there are real public repos to point
-     at. Restore it from git history rather than rewriting the placeholders:
-     the heading art (hd-projects.svg) is still in the repo and unused. -->
+<samp>python &nbsp; go &nbsp; typescript &nbsp; sql &nbsp; postgres &nbsp; redis &nbsp; celery &nbsp; airflow &nbsp; fastapi &nbsp; next.js &nbsp; react &nbsp; docker &nbsp; azure &nbsp; linux &nbsp; git</samp>
 
 <div align="center">
 
@@ -52,29 +79,6 @@ making the slow thing fast, and writing the runbook so nobody has to guess at 3a
 
 <img src="./hd-about-this-page.svg" width="620" alt="about this page"/>
 
-No badge services here. Every image on this page is an SVG built in this repo<br>
-and committed alongside the README, which means there is no third-party host to<br>
-rate-limit me, change its API, or quietly shut down.
-
-[A nightly action](.github/workflows/stats.yml) queries the GitHub GraphQL API,<br>
-redraws the stat graphics, and commits only the files whose bytes actually<br>
-changed — a quiet day produces no commit at all.
-
-The headings are images because styling README text is impossible — GitHub<br>
-sanitises `<script>` and `<style>` out of markdown — so the only route to a<br>
-chosen typeface is to draw the words yourself.
-
-That typeface is [JetBrains Mono](scripts/fonts), subset per graphic to the<br>
-handful of glyphs it draws and base64-inlined, since an SVG loaded via `<img>`<br>
-cannot fetch anything external.
-
-Every graphic is drawn complete at frame zero. That constraint is the whole<br>
-design, and it was learned the hard way: GitHub renders a README image at t=0<br>
-and never advances the SMIL timeline, so a fade that starts at opacity 0 or a<br>
-clip that reveals from width 0 is not a subtle animation — it is a blank box,<br>
-permanently, for every visitor. The first version of this page shipped a<br>
-terminal that typed itself out and was therefore invisible. Motion now only<br>
-ever loops on top of an already-finished picture.
-
-Language figures count public repositories only. `year.svg` draws one character<br>
-per day: `:` `+` `#` `@`, quiet to loud.
+No badge services. Every graphic here is an SVG built in this repo and redrawn by<br>
+[a nightly action](.github/workflows/stats.yml) from the GitHub GraphQL API, which commits only<br>
+the files whose bytes changed. Language figures count public repositories only.
