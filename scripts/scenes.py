@@ -37,7 +37,7 @@ SESSION = [
     ("git", "9b0e772  feat: ship it, watch it, learn from it"),
     ("gap", ""),
     ("cmd", "ls ~/stack"),
-    ("out", "python/  go/  sql/  airflow/  celery/  redis/  postgres/  docker/"),
+    ("out", "python/  go/  typescript/  sql/  airflow/  celery/  redis/  postgres/  docker/"),
     ("gap", ""),
     ("cmd", "cat ~/.plan"),
     ("out", "make the slow thing fast. delete more than i add."),
